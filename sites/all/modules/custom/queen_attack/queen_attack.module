@@ -53,11 +53,24 @@
     return $form;
   }
 
+  function queen_attack_form_validate($form, &$form_state){
+    $queen_position_x = $form_state['values']['queen_position_x'];
+    $queen_position_y = $form_state['values']['queen_position_y'];
+    $enemy_position_x = $form_state['values']['enemy_position_x'];
+    $enemy_position_y = $form_state['values']['enemy_position_y'];
+
+    if($queen_position_x == $enemy_position_x && $queen_position_y == $enemy_position_y) {
+      form_set_error('queen_position_x', t('You cannot place your piece and enemy piece same place!'));
+    }
+
+  }
+
   function queen_attack_form_submit($form, &$form_state){
     $queen_position_x = $form_state['values']['queen_position_x'];
     $queen_position_y = $form_state['values']['queen_position_y'];
     $enemy_position_x = $form_state['values']['enemy_position_x'];
     $enemy_position_y = $form_state['values']['enemy_position_y'];
+
 
     $x_diff = $queen_position_x - $enemy_position_x;
     $y_diff = $queen_position_y - $enemy_position_y;
