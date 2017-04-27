@@ -1,0 +1,121 @@
+<?php
+  function janken_menu() {
+    $items['janken'] = array(
+      'title' => 'Rock Paper Scissors',
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('janken_menu_p1_form'),
+      'access callback' => TRUE,
+      'type' => MENU_NORMAL_ITEM,
+    );
+
+    $items['janken2'] = array(
+      'title' => 'Rock Paper Scissors',
+      'page callback' => 'drupal_get_form',
+      'page arguments' => array('janken_menu_p2_form'),
+      'access callback' => TRUE,
+      'type' => MENU_CALLBACK,
+    );
+
+    $items['janken_result'] = array(
+      'title' => 'Result',
+      'page callback' => 'result',
+      'access callback' => TRUE,
+      'type' => MENU_CALLBACK,
+    );
+    return $items;
+  }
+
+  function janken_menu_p1_form() {
+      $form['player1'] = array(
+        '#title' => 'Player1',
+        '#description' => 'Player1, please choose your weapon',
+        '#type' => 'radios',
+        '#options' => array(
+          'Rock' => t('Rock'),
+          'Paper' => t('Paper'),
+          'Scissors' => t('Scissors'),
+        ),
+        '#required' => TRUE,
+      );
+
+      $form['submit'] = array(
+        '#type' => 'submit',
+        '#value' => 'Go!',
+      );
+      return $form;
+  }
+
+
+  function janken_menu_p1_form_submit($form, &$form_state) {
+      $p1_weapon = $form_state['values']['player1'];
+      $_SESSION['p1_weapon'] = $p1_weapon;
+      $form_state['redirect'] = 'janken2';
+  }
+
+  function janken_menu_p2_form() {
+      $form['player2'] = array(
+        '#title' => 'Player2',
+        '#description' => 'Player2, please choose your weapon',
+        '#type' => 'radios',
+        '#options' => array(
+          'Rock' => t('Rock'),
+          'Paper' => t('Paper'),
+          'Scissors' => t('Scissors'),
+        ),
+        '#required' => TRUE,
+      );
+
+      $form['submit'] = array(
+        '#type' => 'submit',
+        '#value' => 'Go!',
+      );
+      return $form;
+  }
+
+
+  function result() {
+
+    $result = $_SESSION['battle_result'];
+
+    return '
+      <h3>Result</h3>
+      '.$result.'!!
+      ';
+  }
+
+
+  function janken_menu_p2_form_submit($form, &$form_state){
+    $p1_weapon = $_SESSION['p1_weapon'];
+    $p2_weapon = $form_state['values']['player2'];
+
+    if($p1_weapon == $p2_weapon){
+      $_SESSION['battle_result'] = 'Draw';
+    }
+
+    if ($p1_weapon == 'Rock' && $p2_weapon == 'Paper'){
+      $_SESSION['battle_result'] = 'P2 Win';
+    }
+
+
+    if ($p1_weapon == 'Rock' && $p2_weapon == 'Scissors'){
+      $_SESSION['battle_result'] = 'P1 Win';
+    }
+
+    if ($p1_weapon == 'Paper' && $p2_weapon == 'Rock'){
+      $_SESSION['battle_result'] = 'P1 Win';
+    }
+
+    if ($p1_weapon == 'Paper' && $p2_weapon == 'Scissors'){
+      $_SESSION['battle_result'] = 'P2 Win';
+    }
+
+    if ($p1_weapon == 'Scissors' && $p2_weapon == 'Rock'){
+      $_SESSION['battle_result'] = 'P2 Win';
+    }
+
+    if ($p1_weapon == 'Scissors' && $p2_weapon == 'Paper'){
+      $_SESSION['battle_result'] = 'P1 Win';
+    }
+
+    $form_state['redirect'] = 'janken_result';
+  }
