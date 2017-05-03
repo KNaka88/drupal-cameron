@@ -1,0 +1,8 @@
+.field-item:even img {
+  border: 1px solid grey;
+  border-radius: 5px;
+}
+
+p {
+  color: red;
+}
